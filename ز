@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071a38">
+<title>R|S TEAM STORE</title>
+<style>
+:root{--bg:#050b19;--panel:#0b1830;--blue:#1479ed;--cyan:#62baff;--muted:#a9bddb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif;padding-bottom:90px}
+header{padding:24px 18px 20px;background:linear-gradient(140deg,#061a3e,#0757ad,#061027);border-bottom:2px solid #168cff;border-radius:0 0 25px 25px}
+.logo{text-align:center;font-size:38px;font-weight:900;letter-spacing:3px;text-shadow:0 0 20px #168cff}
+header p{text-align:center;color:#c5e2ff;margin:8px 0 16px}
+input,textarea,select{display:block;appearance:none;-webkit-appearance:none;width:100%;min-height:46px;padding:13px;margin:6px 0;border-radius:12px;background:#102442!important;border:1px solid #285b91;color:#fff!important;-webkit-text-fill-color:#fff!important;caret-color:#62baff;font-size:16px;opacity:1}
+.phone-row{display:flex;gap:8px;align-items:center;direction:ltr}.phone-row input{flex:1;min-width:0}.phone-row select{width:132px;flex:0 0 132px}.field-label{display:block;text-align:right;color:#c5e2ff;font-size:13px;margin-top:10px}
+input::placeholder,textarea::placeholder{color:#a9c8e9!important;-webkit-text-fill-color:#a9c8e9!important;opacity:1}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#62baff;box-shadow:0 0 8px #168cff55}
+.banner{margin:15px;padding:24px 15px;border-radius:20px;text-align:center;background:linear-gradient(120deg,#063b83,#07162f);border:1px solid #168cff}
+.banner h2{color:var(--cyan);margin:0 0 8px}
+.section{padding:15px}.page{display:none}.page.active{display:block}
+.filters{display:flex;gap:8px;overflow:auto;margin:15px 0}
+button{cursor:pointer;font-family:inherit}
+.filters button{padding:12px 17px;border-radius:12px;background:#101d36;color:white;border:1px solid #24558c;white-space:nowrap}
+.filters button.active{background:var(--blue);border-color:#62baff}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card,.info-box,.order{background:var(--panel);border:1px solid #173b68;border-radius:16px;padding:12px;margin-bottom:12px;min-width:0}
+.product-img{height:105px;display:grid;place-items:center;background:linear-gradient(140deg,#092b5d,#071226);font-size:40px;border-radius:12px}
+.card h3{font-size:15px;margin:10px 0 5px}.card p{font-size:12px;color:var(--muted);min-height:14px}
+.price{color:var(--cyan);font-weight:bold}.status{color:#60e5ad;font-size:12px}.sold{color:#ff7777;font-size:12px}
+.buy,.mainbtn{width:100%;padding:12px;border:0;border-radius:10px;background:var(--blue);color:white;margin-top:8px}
+.buy:disabled{background:#444;color:#bbb}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;gap:2px;background:#080f20;border-top:1px solid #1762a8;padding:10px 2px calc(10px + env(safe-area-inset-bottom));z-index:5}
+nav button{background:none;border:0;color:#899bb7;font-size:10px;min-width:0;flex:1}
+nav button.active{color:#62baff}nav span{display:block;font-size:20px;margin-bottom:4px}
+.modal{display:none;position:fixed;inset:0;background:#000c;z-index:10;align-items:center;justify-content:center;padding:18px}
+.modal-box{background:#0b1b35;border:1px solid #168cff;border-radius:20px;padding:20px;width:100%;max-width:400px}
+.modal-box h2{color:var(--cyan)}
+.close{background:#293c58;color:white;border:0;padding:11px;border-radius:9px;width:100%;margin-top:8px}
+.order{margin-top:12px;overflow-wrap:anywhere}.order small{color:#9bbbe2}
+.success{color:#5be2a5}.rejected{color:#ff7777}
+.empty{text-align:center;color:#9bbbe2;padding:25px;grid-column:1/-1}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.admin-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:14px 0}
+.admin-tabs button,.subtab{border:1px solid #24558c;background:#102442;color:#d9ecff;border-radius:12px;padding:12px 5px;font-size:12px;min-height:54px}
+.admin-tabs button.active,.subtab.active{background:linear-gradient(130deg,#1266c7,#168cff);border-color:#62baff;color:white}
+.admin-view{display:none}.admin-view.active{display:block}
+.admin-person{display:flex;align-items:center;gap:12px;background:#0d203c;border:1px solid #1b5488;border-radius:15px;padding:13px;margin:10px 0}
+.admin-avatar{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#1479ed,#62baff);font-size:20px;flex-shrink:0}
+.online-dot{width:9px;height:9px;border-radius:50%;background:#52e6a5;display:inline-block;margin-left:5px;box-shadow:0 0 8px #52e6a5}
+.admin-person small{color:#9bbbe2}.admin-person .person-info{flex:1;min-width:0}
+.master-box{border:1px solid #8a6ad8;background:linear-gradient(145deg,#21183f,#0b1830);border-radius:16px;padding:14px;margin-top:18px}
+.master-box h3{color:#c6aaff;margin-top:0}.muted-note{color:#9bbbe2;font-size:12px;line-height:1.7}
+.stat{background:#102442;border-radius:12px;padding:12px;text-align:center}
+.manage-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.manage-row>*{min-width:0}.danger-btn{background:#8e293c!important}.mini-btn{padding:10px;border:0;border-radius:9px;background:#1766ad;color:#fff;margin:4px 0;width:100%}
+.stat b{display:block;font-size:22px;color:var(--cyan);margin-top:5px}
+@media(min-width:650px){.section{max-width:850px;margin:auto}.banner{max-width:820px;margin:18px auto}.products{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">R | S</div>
+ <p>WELCOME TO R|S TEAM STORE</p>
+ <input id="search" placeholder="🔍 ابحث عن منتج..." oninput="render()">
+</header>
+<section id="registerGate" class="page active"><div class="section"><div class="info-box"><h2 style="color:#62baff">تسجيل الدخول إلى R|S 👑</h2><p style="color:#a9bddb">سجّل بياناتك قبل دخول المتجر</p><label class="field-label" for="regName">الاسم</label><input id="regName" placeholder="اكتب اسمك" autocomplete="name"><label class="field-label" for="regCountry">الدولة</label><select id="regCountry"><option value="🇦🇪 +971">🇦🇪 الإمارات +971</option><option value="🇸🇦 +966">🇸🇦 السعودية +966</option><option value="🇰🇼 +965">🇰🇼 الكويت +965</option><option value="🇴🇲 +968">🇴🇲 عمان +968</option><option value="🇶🇦 +974">🇶🇦 قطر +974</option><option value="🇧🇭 +973">🇧🇭 البحرين +973</option><option value="🇪🇬 +20">🇪🇬 مصر +20</option><option value="🇯🇴 +962">🇯🇴 الأردن +962</option><option value="🇮🇶 +964">🇮🇶 العراق +964</option><option value="🇲🇦 +212">🇲🇦 المغرب +212</option><option value="🇹🇷 +90">🇹🇷 تركيا +90</option><option value="🇺🇸 +1">🇺🇸 أمريكا +1</option><option value="🇬🇧 +44">🇬🇧 بريطانيا +44</option></select><label class="field-label" for="regPhone">رقم الهاتف</label><input id="regPhone" type="tel" inputmode="tel" placeholder="ادخل الرقم" autocomplete="tel-national"><label class="field-label" for="regRegion">الإمارة أو المنطقة</label><input id="regRegion" placeholder="مثال: رأس الخيمة أو دبي" autocomplete="address-level1"><button class="mainbtn" onclick="registerUser()">دخول المتجر</button><p id="registerError" style="color:#ff7777"></p></div></div></section>
+<div id="appContent" style="display:none">
+<div class="banner"><h2 id="storeHeading">🔥 متجر تيم R|S</h2><p id="storeSubtitle">كل احتياجاتك في مكان واحد 💙</p><small>WELCOME TO OUR STORE</small></div>
+<section class="page active" id="home"><div class="section">
+ <h2>مرحباً بك في R|S 👑</h2><p style="color:#a9bddb">المتجر الرسمي لتيم R|S</p>
+ <div class="info-box"><h3>🛒 المتجر</h3><p>تصفح المنتجات والخدمات المتوفرة.</p><button class="mainbtn" onclick="showPage('store')">تصفح المتجر</button></div>
+ <div class="info-box"><h3>🛡️ الحمايات</h3><p>خدمات الحماية الخاصة بالتيم.</p><button class="mainbtn" onclick="showPage('protection')">عرض الحمايات</button></div>
+ <div class="info-box"><h3>👥 حسابات الأعضاء</h3><p>شاهد المنتجات الخاصة بالأعضاء.</p><button class="mainbtn" onclick="showPage('members')">عرض الحسابات</button></div>
+</div></section>
+<section class="page" id="store"><div class="section">
+ <h2>المتجر 🛒</h2>
+ <div class="filters">
+  <button class="active" onclick="filter('all',this)">الكل</button>
+  <button onclick="filter('available',this)">الآن متوفر</button>
+  <button onclick="filter('sold',this)">Sold Out</button>
+ </div>
+ <div class="products" id="products"></div>
+</div></section>
+<section class="page" id="protection"><div class="section"><h2>الحمايات 🛡️</h2><div class="products" id="protections"></div></div></section>
+<section class="page" id="members"><div class="section"><h2>حساب الأعضاء 👥</h2><div class="products" id="memberProducts"></div></div></section>
+<section class="page" id="account"><div class="section"><h2>حسابي 👤</h2><div class="info-box"><h3 id="profileName">R|S TEAM MEMBER</h3><p id="profilePhone"></p><p id="profileRegion"></p><button class="close" onclick="userLogout()">تسجيل الخروج</button></div></div></section>
+<section class="page" id="admin"><div class="section">
+ <h2 style="color:#62baff">ADMIN PANEL 👑</h2>
+ <div id="loginBox" class="info-box"><h3>دخول الإدارة</h3><input id="adminPassword" type="password" placeholder="كلمة مرور الإدارة"><button class="mainbtn" onclick="adminLogin()">دخول</button><p id="loginError" style="color:#ff7777"></p></div>
+ <div id="adminPanel" style="display:none">
+  <div class="info-box"><h3>📊 إحصائيات الطلبات</h3><div class="stats">
+   <div class="stat">كل الطلبات<b id="total">0</b></div><div class="stat">معلقة<b id="pending">0</b></div>
+   <div class="stat">مقبولة<b id="accepted">0</b></div><div class="stat">مرفوضة<b id="rejected">0</b></div>
+  </div></div>
+  <div class="admin-tabs">
+   <button class="active" onclick="adminTab('productsTab',this)">🛍️<br>تعديل المنتجات</button>
+   <button onclick="adminTab('adminsTab',this)">🟢<br>الإدارة المتواجدين</button>
+   <button onclick="adminTab('ordersTab',this)">📦<br>الطلبات</button>
+   <button onclick="openMasterAdmin(this)">👑<br>الإدارة العليا</button>
+  </div>
+  <div id="productsTab" class="admin-view active"><h3>🛍️ إدارة المنتجات</h3><div id="productManager"></div></div>
+  <div id="adminsTab" class="admin-view"><h3>👥 الإدارة المتواجدين</h3><div id="onlineAdmins"></div><h3>👤 جميع المسجلين</h3><div id="registeredUsers"></div></div>
+  <div id="ordersTab" class="admin-view"><h3>📦 طلبات العملاء</h3><div id="orders"></div></div>
+  <div id="masterTab" class="admin-view"><div id="masterLogin" class="master-box"><h3>👑 دخول الإدارة العليا</h3><p class="muted-note">هذه الصلاحية للمسؤول الرئيسي فقط.</p><input id="masterPassword" type="password" inputmode="numeric" placeholder="رمز الإدارة العليا"><button class="mainbtn" onclick="verifyMaster()">دخول الإدارة العليا</button><p id="masterError" style="color:#ff7777"></p></div>
+   <div id="masterControls" style="display:none">
+    <div class="master-box"><h3>⚙️ إعدادات المتجر</h3><label class="field-label">اسم المتجر</label><input id="masterStoreName" placeholder="اسم المتجر"><label class="field-label">وصف المتجر</label><input id="masterStoreSubtitle" placeholder="وصف قصير للمتجر"><button class="mainbtn" onclick="saveStoreSettings()">حفظ إعدادات المتجر</button></div>
+    <div class="master-box"><h3>🧭 التحكم بالرومات والقائمة السفلية</h3><p class="muted-note">غيّر أسماء وأيقونات الخيارات، وأضف رومات جديدة أو احذف الرومات التي أنشأتها.</p><div id="navRoomManager"></div><h4>➕ إضافة روم جديد</h4><label class="field-label">اسم الروم</label><input id="newRoomName" placeholder="مثال: العروض"><label class="field-label">الأيقونة</label><input id="newRoomIcon" placeholder="🎁" value="🎁"><label class="field-label">وصف الروم</label><input id="newRoomDesc" placeholder="وصف يظهر داخل الروم"><button class="mainbtn" onclick="addCustomRoom()">إضافة الروم</button></div>
+    <div class="master-box"><h3>➕ إضافة منتج جديد</h3><label class="field-label">اسم المنتج</label><input id="newProductName" placeholder="اسم المنتج"><label class="field-label">الوصف</label><input id="newProductDesc" placeholder="وصف المنتج"><div class="manage-row"><div><label class="field-label">السعر AED</label><input id="newProductPrice" type="number" min="0" step="0.5" placeholder="0"></div><div><label class="field-label">الأيقونة</label><input id="newProductIcon" placeholder="🛍️" value="🛍️"></div></div><label class="field-label">الروم الذي يظهر فيه المنتج</label><select id="newProductRoom"></select><label class="field-label">الحالة</label><select id="newProductStatus"><option value="available">متوفر</option><option value="closed">مغلق</option><option value="sold">Sold Out</option></select><button class="mainbtn" onclick="addProduct()">إضافة المنتج</button></div>
+    <div class="master-box"><h3>👥 التحكم بالإداريين</h3><div id="masterAdminList"></div><label class="field-label" for="newAdminName">اسم الإداري</label><input id="newAdminName" placeholder="اكتب اسم الإداري"><label class="field-label" for="newAdminRole">الصلاحية</label><select id="newAdminRole"><option value="admin">إداري</option><option value="senior">إداري مسؤول</option></select><button class="mainbtn" onclick="addManagedAdmin()">إضافة إداري</button></div>
+    <div class="master-box"><h3>🛍️ تحكم كامل بالمنتجات</h3><p class="muted-note">تقدر الإدارة العليا تعديل اسم ووصف وسعر وحالة كل منتج.</p><div id="masterProductManager"></div></div>
+    <div class="master-box"><h3>📦 إدارة الطلبات</h3><p class="muted-note">إدارة الطلبات ومراجعتها من تبويب الطلبات.</p><button class="mainbtn" onclick="adminTab('ordersTab',document.querySelectorAll('.admin-tabs button')[2])">فتح الطلبات</button></div>
+    <p class="muted-note">الحفظ محلي على هذا الجهاز والمتصفح. التزامن بين أجهزة مختلفة يحتاج قاعدة بيانات مشتركة.</p>
+   </div>
+  </div>
+  <button class="mainbtn" onclick="logout()">تسجيل الخروج من الإدارة</button>
+ </div>
+</div></section>
+<nav>
+ <button class="active" onclick="showPage('home',this)"><span>⌂</span>الرئيسية</button>
+ <button onclick="showPage('store',this)"><span>🛒</span>المتجر</button>
+ <button onclick="showPage('protection',this)"><span>🛡️</span>حمايات</button>
+ <button onclick="showPage('members',this)"><span>👥</span>الأعضاء</button>
+ <button onclick="showPage('account',this)"><span>👤</span>حسابي</button>
+ <button onclick="showPage('admin',this)"><span>👑</span>ADMIN</button>
+</nav>
+</div>
+<div class="modal" id="buyModal"><div class="modal-box">
+ <h2>تأكيد الطلب 🛒</h2><p id="selectedProduct"></p>
+ <input id="customerName" placeholder="اسمك أو اسم حسابك" autocomplete="name">
+ <label class="field-label" for="customerContact">رقم الهاتف</label>
+ <div class="phone-row">
+  <input id="customerContact" type="tel" inputmode="tel" placeholder="ادخل الرقم" autocomplete="tel-national">
+  <select id="customerCountry" aria-label="اختر الدولة">
+   <option value="🇦🇪 +971">🇦🇪 الإمارات +971</option>
+   <option value="🇸🇦 +966">🇸🇦 السعودية +966</option>
+   <option value="🇰🇼 +965">🇰🇼 الكويت +965</option>
+   <option value="🇴🇲 +968">🇴🇲 عمان +968</option>
+   <option value="🇶🇦 +974">🇶🇦 قطر +974</option>
+   <option value="🇧🇭 +973">🇧🇭 البحرين +973</option>
+   <option value="🇪🇬 +20">🇪🇬 مصر +20</option>
+   <option value="🇯🇴 +962">🇯🇴 الأردن +962</option>
+   <option value="🇮🇶 +964">🇮🇶 العراق +964</option>
+   <option value="🇲🇦 +212">🇲🇦 المغرب +212</option>
+   <option value="🇹🇷 +90">🇹🇷 تركيا +90</option>
+   <option value="🇺🇸 +1">🇺🇸 أمريكا +1</option>
+   <option value="🇬🇧 +44">🇬🇧 بريطانيا +44</option>
+  </select>
+ </div>
+ <label class="field-label" for="customerRegion">الإمارة أو المنطقة</label>
+ <input id="customerRegion" placeholder="مثال: رأس الخيمة أو دبي" autocomplete="address-level1">
+ <button class="mainbtn" onclick="submitOrder()">تأكيد الطلب</button>
+ <button class="close" onclick="closeModal()">إلغاء</button>
+</div></div>
+<div class="modal" id="successModal"><div class="modal-box" style="text-align:center">
+ <h2>تم إرسال طلبك! 🎉</h2><p>تم تسجيل طلبك على هذا الجهاز.</p><p id="orderNumber" style="color:#62baff"></p>
+ <button class="mainbtn" onclick="closeSuccess()">حسناً</button>
+</div></div>
+<script>
+const DEFAULT_ITEMS=[
+{id:1,name:"حماية الحساب",desc:"خدمة حماية الحساب",price:20,icon:"🛡️",status:"available",type:"protection"},
+{id:2,name:"عضوية التيم",desc:"الانضمام إلى تيم R|S",price:30,icon:"👑",status:"available",type:"general"},
+{id:3,name:"حساب عضو",desc:"حساب عضو في التيم",price:15,icon:"👤",status:"available",type:"member"},
+{id:4,name:"رتبة خاصة",desc:"رتبة خاصة داخل التيم",price:10,icon:"⭐",status:"available",type:"general"},
+{id:5,name:"حماية إضافية",desc:"خدمات حماية إضافية",price:25,icon:"🔐",status:"available",type:"protection"},
+{id:6,name:"حساب مميز",desc:"حساب مميز",price:40,icon:"💎",status:"available",type:"member"}
+];
+let items=load("rs_items",DEFAULT_ITEMS);
+let orders=load("rs_orders",[]);
+let users=load("rs_users",[]);
+let admins=load("rs_admins",[]);
+let currentFilter="all",selected=null,loggedIn=false,masterUnlocked=false;
+
+function load(key,def){
+ try{return JSON.parse(localStorage.getItem(key))??JSON.parse(JSON.stringify(def))}
+ catch(e){return JSON.parse(JSON.stringify(def))}
+}
+function saveItems(){localStorage.setItem("rs_items",JSON.stringify(items))}
+function saveOrders(){localStorage.setItem("rs_orders",JSON.stringify(orders))}
+function saveUsers(){localStorage.setItem("rs_users",JSON.stringify(users))}
+function saveAdmins(){localStorage.setItem("rs_admins",JSON.stringify(admins))}
+function escapeHTML(s){
+ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function registerUser(){
+ const name=document.getElementById("regName").value.trim();
+ const country=document.getElementById("regCountry").value;
+ const phone=document.getElementById("regPhone").value.trim();
+ const region=document.getElementById("regRegion").value.trim();
+ if(!name||!phone||!region){
+ document.getElementById("registerError").textContent="يرجى تعبئة جميع البيانات";
+ return;
+ }
+ const user={name,country,phone,region};
+ localStorage.setItem("rs_current_user",JSON.stringify(user));
+ const old=users.find(x=>x.name===name&&x.phone===phone);
+ if(!old)users.push(user);
+ saveUsers();
+ enterStore(user);
+}
+function enterStore(user){
+ document.getElementById("registerGate").classList.remove("active");
+ document.getElementById("appContent").style.display="block";
+ document.getElementById("profileName").textContent=user.name;
+ document.getElementById("profilePhone").textContent=user.country+" "+user.phone;
+ document.getElementById("profileRegion").textContent=user.region;
+ render();
+}
+function userLogout(){
+ localStorage.removeItem("rs_current_user");
+ location.reload();
+}
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ const page=document.getElementById(id);
+ if(page)page.classList.add("active");
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+ else{
+ const b=document.querySelector(`nav button[data-page="${id}"]`);
+ if(b)b.classList.add("active");
+ }
+ if(id==="admin")refreshAdmin();
+ window.scrollTo(0,0);
+}
+function filter(type,btn){
+ currentFilter=type;
+ document.querySelectorAll(".filters button").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");
+ render();
+}
+function card(i){
+ const available=i.status==="available";
+ return `<div class="card">
+ <div class="product-img">${escapeHTML(i.icon||"🛍️")}</div>
+ <h3>${escapeHTML(i.name)}</h3>
+ <p>${escapeHTML(i.desc)}</p>
+ <div class="price">${Number(i.price).toFixed(2)} AED</div>
+ <p class="${available?"status":"sold"}">${available?"متوفر":"غير متوفر"}</p>
+ <button class="buy" ${available?"":"disabled"} onclick="openBuy(${Number(i.id)})">${available?"اطلب الآن":"غير متوفر"}</button>
+ </div>`;
+}
+function render(){
+ const q=(document.getElementById("search")?.value||"").trim().toLowerCase();
+ const visible=items.filter(i=>{
+ const matches=(i.name+" "+i.desc).toLowerCase().includes(q);
+ const status=currentFilter==="all"||i.status===currentFilter;
+ return matches&&status;
+ });
+ document.getElementById("products").innerHTML=visible.filter(i=>i.type==="general").map(card).join("")||'<div class="empty">لا توجد منتجات</div>';
+ document.getElementById("protections").innerHTML=items.filter(i=>i.type==="protection").map(card).join("")||'<div class="empty">لا توجد منتجات</div>';
+ document.getElementById("memberProducts").innerHTML=items.filter(i=>i.type==="member").map(card).join("")||'<div class="empty">لا توجد منتجات</div>';
+ getCustomRooms().forEach(r=>{
+ const el=document.getElementById("room-products-"+r.id);
+ if(el)el.innerHTML=items.filter(i=>i.type===r.id).map(card).join("")||'<div class="empty">لا توجد منتجات</div>';
+ });
+}
+function openBuy(id){
+ selected=items.find(i=>i.id===id);
+ if(!selected)return;
+ document.getElementById("selectedProduct").textContent=selected.name+" — "+selected.price+" AED";
+ const user=load("rs_current_user",{});
+ document.getElementById("customerName").value=user.name||"";
+ document.getElementById("customerContact").value=user.phone||"";
+ document.getElementById("customerCountry").value=user.country||"🇦🇪 +971";
+ document.getElementById("customerRegion").value=user.region||"";
+ document.getElementById("buyModal").style.display="flex";
+}
+function closeModal(){document.getElementById("buyModal").style.display="none"}
+function submitOrder(){
+ if(!selected)return;
+ const name=document.getElementById("customerName").value.trim();
+ const phone=document.getElementById("customerContact").value.trim();
+ const country=document.getElementById("customerCountry").value;
+ const region=document.getElementById("customerRegion").value.trim();
+ if(!name||!phone||!region){alert("يرجى تعبئة جميع البيانات");return}
+ const order={
+ id:Date.now(),
+ product:selected.name,
+ price:selected.price,
+ name,phone,country,region,
+ status:"pending",
+ date:new Date().toLocaleString("ar-AE")
+ };
+ orders.push(order);
+ saveOrders();
+ closeModal();
+ document.getElementById("orderNumber").textContent="رقم الطلب: "+order.id;
+ document.getElementById("successModal").style.display="flex";
+}
+function closeSuccess(){document.getElementById("successModal").style.display="none"}
+function adminLogin(){
+ if(document.getElementById("adminPassword").value!=="1111"){
+ document.getElementById("loginError").textContent="الرمز غير صحيح";
+ return;
+ }
+ loggedIn=true;
+ document.getElementById("loginBox").style.display="none";
+ document.getElementById("adminPanel").style.display="block";
+ refreshAdmin();
+}
+function logout(){
+ loggedIn=false;masterUnlocked=false;
+ document.getElementById("loginBox").style.display="block";
+ document.getElementById("adminPanel").style.display="none";
+ document.getElementById("adminPassword").value="";
+}
+function adminTab(id,btn){
+ document.querySelectorAll(".admin-view").forEach(x=>x.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".admin-tabs button").forEach(x=>x.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+}
+function refreshAdmin(){
+ if(!loggedIn)return;
+ document.getElementById("total").textContent=orders.length;
+ document.getElementById("pending").textContent=orders.filter(x=>x.status==="pending").length;
+ document.getElementById("accepted").textContent=orders.filter(x=>x.status==="accepted").length;
+ document.getElementById("rejected").textContent=orders.filter(x=>x.status==="rejected").length;
+ document.getElementById("productManager").innerHTML=items.map(i=>`
+ <div class="order"><b>${escapeHTML(i.name)}</b>
+ <p>${escapeHTML(i.desc)} — ${i.price} AED</p>
+ <button class="mini-btn" onclick="changeStatus(${i.id})">تغيير حالة التوفر</button></div>`).join("");
+ document.getElementById("orders").innerHTML=orders.slice().reverse().map(o=>`
+ <div class="order"><b>${escapeHTML(o.product)}</b>
+ <p>الاسم: ${escapeHTML(o.name)}</p>
+ <p>الدولة: ${escapeHTML(o.country)}</p>
+ <p>الهاتف: ${escapeHTML(o.phone)}</p>
+ <p>المنطقة: ${escapeHTML(o.region)}</p>
+ <p>السعر: ${o.price} AED</p>
+ <small>${escapeHTML(o.date)}</small>
+ <p>الحالة: ${escapeHTML(o.status)}</p>
+ <button class="mini-btn" onclick="setOrder(${o.id},'accepted')">قبول الطلب</button>
+ <button class="mini-btn danger-btn" onclick="setOrder(${o.id},'rejected')">رفض الطلب</button>
+ </div>`).join("")||'<div class="empty">لا توجد طلبات</div>';
+ document.getElementById("registeredUsers").innerHTML=users.map(u=>`<div class="order">${escapeHTML(u.name)} — ${escapeHTML(u.region)}</div>`).join("")||"لا يوجد أعضاء";
+ document.getElementById("onlineAdmins").innerHTML=admins.filter(a=>a.active!==false).map(a=>`<div class="admin-person"><div class="admin-avatar">👤</div><div class="person-info"><b>${escapeHTML(a.name)}</b><br><small>${escapeHTML(a.role)}</small></div><span class="online-dot"></span></div>`).join("")||"لا يوجد إداريون مضافون";
+}
+function changeStatus(id){
+ const i=items.find(x=>x.id===id);if(!i)return;
+ i.status=i.status==="available"?"closed":"available";
+ saveItems();refreshAdmin();render();
+}
+function setOrder(id,status){
+ const o=orders.find(x=>x.id===id);if(!o)return;
+ o.status=status;saveOrders();refreshAdmin();
+}
+function openMasterAdmin(btn){
+ adminTab("masterTab",btn);
+ document.getElementById("masterLogin").style.display="block";
+ document.getElementById("masterControls").style.display="none";
+ masterUnlocked=false;
+}
+function verifyMaster(){
+ if(document.getElementById("masterPassword").value!=="0000"){
+ document.getElementById("masterError").textContent="الرمز غير صحيح";return;
+ }
+ masterUnlocked=true;
+ document.getElementById("masterLogin").style.display="none";
+ document.getElementById("masterControls").style.display="block";
+ document.getElementById("masterStoreName").value=localStorage.getItem("rs_store_name")||"🔥 متجر تيم R|S";
+ document.getElementById("masterStoreSubtitle").value=localStorage.getItem("rs_store_subtitle")||"كل احتياجاتك في مكان واحد 💙";
+ renderRoomManager();
+ renderMasterProducts();
+}
+function applyStoreSettings(){
+ document.getElementById("storeHeading").textContent=localStorage.getItem("rs_store_name")||"🔥 متجر تيم R|S";
+ document.getElementById("storeSubtitle").textContent=localStorage.getItem("rs_store_subtitle")||"كل احتياجاتك في مكان واحد 💙";
+ document.title=document.getElementById("storeHeading").textContent;
+}
+function saveStoreSettings(){
+ if(!masterUnlocked)return;
+ localStorage.setItem("rs_store_name",document.getElementById("masterStoreName").value.trim());
+ localStorage.setItem("rs_store_subtitle",document.getElementById("masterStoreSubtitle").value.trim());
+ applyStoreSettings();alert("تم حفظ إعدادات المتجر");
+}
+function renderMasterProducts(){
+ if(!masterUnlocked)return;
+ document.getElementById("masterProductManager").innerHTML=items.map(i=>`
+ <div class="order"><b>${escapeHTML(i.name)}</b>
+ <label class="field-label">اسم المنتج</label><input id="mp-name-${i.id}" value="${escapeHTML(i.name)}">
+ <label class="field-label">الوصف</label><input id="mp-desc-${i.id}" value="${escapeHTML(i.desc)}">
+ <div class="manage-row"><div><label class="field-label">السعر</label><input id="mp-price-${i.id}" type="number" value="${i.price}"></div><div><label class="field-label">الأيقونة</label><input id="mp-icon-${i.id}" value="${escapeHTML(i.icon)}"></div></div>
+ <label class="field-label">الحالة</label><select id="mp-status-${i.id}"><option value="available" ${i.status==="available"?"selected":""}>متوفر</option><option value="closed" ${i.status==="closed"?"selected":""}>مغلق</option><option value="sold" ${i.status==="sold"?"selected":""}>Sold Out</option></select>
+ <button class="mini-btn" onclick="saveMasterProduct(${i.id})">حفظ المنتج</button>
+ <button class="mini-btn danger-btn" onclick="deleteProduct(${i.id})">حذف المنتج</button></div>`).join("")||"لا توجد منتجات";
+}
+function saveMasterProduct(id){
+ if(!masterUnlocked)return;
+ const i=items.find(x=>x.id===id);if(!i)return;
+ i.name=document.getElementById("mp-name-"+id).value.trim()||i.name;
+ i.desc=document.getElementById("mp-desc-"+id).value.trim();
+ i.price=Math.max(0,Number(document.getElementById("mp-price-"+id).value)||0);
+ i.icon=document.getElementById("mp-icon-"+id).value.trim()||"🛍️";
+ i.status=document.getElementById("mp-status-"+id).value;
+ saveItems();render();renderMasterProducts();refreshAdmin();
+ alert("تم حفظ المنتج");
+}
+function getNavItems(){
+ try{return JSON.parse(localStorage.getItem("rs_nav_items"))||DEFAULT_NAV.map(x=>({...x}))}
+ catch(e){return DEFAULT_NAV.map(x=>({...x}))}
+}
+const DEFAULT_NAV=[
+ {id:"home",label:"الرئيسية",icon:"⌂",fixed:true},
+ {id:"store",label:"المتجر",icon:"🛒",fixed:true},
+ {id:"protection",label:"حمايات",icon:"🛡️",fixed:true},
+ {id:"members",label:"الأعضاء",icon:"👥",fixed:true},
+ {id:"account",label:"حسابي",icon:"👤",fixed:true},
+ {id:"admin",label:"ADMIN",icon:"👑",fixed:true}
+];
+function saveNavItems(v){
+ localStorage.setItem("rs_nav_items",JSON.stringify(v));renderNavigation();
+}
+function getCustomRooms(){
+ try{return JSON.parse(localStorage.getItem("rs_custom_rooms"))||[]}
+ catch(e){return []}
+}
+function saveCustomRooms(v){localStorage.setItem("rs_custom_rooms",JSON.stringify(v))}
+function renderNavigation(){
+ const nav=document.querySelector("nav");if(!nav)return;
+ const visible=getNavItems().filter(x=>x.visible!==false);
+ nav.innerHTML=visible.map(x=>`<button data-page="${escapeHTML(x.id)}" onclick="showPage('${escapeHTML(x.id)}',this)"><span>${escapeHTML(x.icon||"📁")}</span>${escapeHTML(x.label||x.id)}</button>`).join("");
+}
+function ensureRoomPages(){
+ const host=document.getElementById("appContent");
+ getCustomRooms().forEach(r=>{
+ if(!document.getElementById(r.id)){
+ const sec=document.createElement("section");
+ sec.className="page";sec.id=r.id;
+ sec.innerHTML=`<div class="section"><h2>${escapeHTML(r.icon)} ${escapeHTML(r.name)}</h2><p class="muted-note">${escapeHTML(r.desc||"")}</p><div class="products" id="room-products-${r.id}"></div></div>`;
+ host.insertBefore(sec,document.querySelector("nav"));
+ }
+ });
+}
+function renderRoomManager(){
+ if(!masterUnlocked)return;
+ const nav=getNavItems(),rooms=getCustomRooms();
+ document.getElementById("navRoomManager").innerHTML=nav.map((n,i)=>`
+ <div class="order"><b>${escapeHTML(n.label)}</b>
+ <div class="manage-row"><div><label class="field-label">اسم الخيار</label><input id="nav-label-${i}" value="${escapeHTML(n.label)}"></div>
+ <div><label class="field-label">الأيقونة</label><input id="nav-icon-${i}" value="${escapeHTML(n.icon)}"></div></div>
+ <label><input type="checkbox" id="nav-visible-${i}" ${n.visible===false?"":"checked"} style="display:inline-block;width:auto;min-height:0"> إظهار الخيار في القائمة السفلية</label>
+ <button class="mini-btn" onclick="saveNavItem(${i})">حفظ الخيار</button></div>`).join("")+
+ rooms.map((r,i)=>`<div class="order"><b>${escapeHTML(r.icon)} ${escapeHTML(r.name)}</b>
+ <label class="field-label">اسم الروم</label><input id="room-name-${i}" value="${escapeHTML(r.name)}">
+ <label class="field-label">الأيقونة</label><input id="room-icon-${i}" value="${escapeHTML(r.icon)}">
+ <label class="field-label">الوصف</label><input id="room-desc-${i}" value="${escapeHTML(r.desc||"")}">
+ <button class="mini-btn" onclick="saveRoom(${i})">حفظ الروم</button>
+ <button class="mini-btn danger-btn" onclick="deleteRoom(${i})">حذف الروم</button></div>`).join("");
+ const sel=document.getElementById("newProductRoom");
+ if(sel){
+ const opts=[["general","المتجر العام"],["protection","الحمايات"],["member","الأعضاء"],...rooms.map(r=>[r.id,r.name])];
+ sel.innerHTML=opts.map(o=>`<option value="${escapeHTML(o[0])}">${escapeHTML(o[1])}</option>`).join("");
+ }
+}
+function saveNavItem(i){
+ const a=getNavItems();if(!a[i])return;
+ a[i].label=document.getElementById("nav-label-"+i).value.trim()||a[i].label;
+ a[i].icon=document.getElementById("nav-icon-"+i).value.trim()||"📁";
+ a[i].visible=document.getElementById("nav-visible-"+i).checked;
+ saveNavItems(a);renderRoomManager();
+}
+function addCustomRoom(){
+ if(!masterUnlocked)return;
+ const name=document.getElementById("newRoomName").value.trim();
+ if(!name){alert("اكتب اسم الروم");return}
+ const id="room_"+Date.now();
+ const room={id,name,icon:document.getElementById("newRoomIcon").value.trim()||"📁",desc:document.getElementById("newRoomDesc").value.trim()};
+ const rooms=getCustomRooms();rooms.push(room);saveCustomRooms(rooms);
+ const nav=getNavItems();nav.splice(Math.max(0,nav.length-2),0,{id,label:name,icon:room.icon,custom:true});
+ localStorage.setItem("rs_nav_items",JSON.stringify(nav));
+ ensureRoomPages();renderNavigation();renderRoomManager();render();
+ alert("تمت إضافة الروم");
+}
+function saveRoom(i){
+ const rooms=getCustomRooms();if(!rooms[i])return;
+ rooms[i].name=document.getElementById("room-name-"+i).value.trim()||rooms[i].name;
+ rooms[i].icon=document.getElementById("room-icon-"+i).value.trim()||"📁";
+ rooms[i].desc=document.getElementById("room-desc-"+i).value.trim();
+ saveCustomRooms(rooms);
+ const nav=getNavItems().map(n=>n.id===rooms[i].id?{...n,label:rooms[i].name,icon:rooms[i].icon}:n);
+ localStorage.setItem("rs_nav_items",JSON.stringify(nav));
+ ensureRoomPages();renderNavigation();renderRoomManager();render();
+ alert("تم حفظ الروم");
+}
+function deleteRoom(i){
+ const rooms=getCustomRooms();if(!rooms[i])return;
+ const r=rooms[i];
+ if(!confirm("حذف الروم؟ سيتم نقل منتجاته إلى المتجر العام."))return;
+ items.forEach(p=>{if(p.type===r.id)p.type="general"});
+ saveItems();rooms.splice(i,1);saveCustomRooms(rooms);
+ localStorage.setItem("rs_nav_items",JSON.stringify(getNavItems().filter(n=>n.id!==r.id)));
+ const page=document.getElementById(r.id);if(page)page.remove();
+ renderNavigation();renderRoomManager();render();showPage("store");
+}
+function addProduct(){
+ if(!masterUnlocked)return;
+ const name=document.getElementById("newProductName").value.trim();
+ const price=Number(document.getElementById("newProductPrice").value);
+ if(!name||document.getElementById("newProductPrice").value===""||!Number.isFinite(price)||price<0){
+ alert("اكتب اسم المنتج وسعراً صحيحاً");return;
+ }
+ const product={
+ id:Date.now(),name,
+ desc:document.getElementById("newProductDesc").value.trim(),
+ price,
+ icon:document.getElementById("newProductIcon").value.trim()||"🛍️",
+ status:document.getElementById("newProductStatus").value,
+ type:document.getElementById("newProductRoom").value
+ };
+ items.push(product);saveItems();render();renderMasterProducts();refreshAdmin();
+ ["newProductName","newProductDesc","newProductPrice"].forEach(id=>document.getElementById(id).value="");
+ alert("تمت إضافة المنتج");
+}
+function deleteProduct(id){
+ if(!masterUnlocked||!confirm("تأكيد حذف المنتج نهائياً؟"))return;
+ const idx=items.findIndex(x=>x.id===id);
+ if(idx>=0){items.splice(idx,1);saveItems();render();renderMasterProducts();refreshAdmin()}
+}
+function addManagedAdmin(){
+ if(!masterUnlocked)return;
+ const name=document.getElementById("newAdminName").value.trim();
+ const role=document.getElementById("newAdminRole").value;
+ if(!name){alert("اكتب اسم الإداري");return}
+ admins.push({id:Date.now(),name,role,active:true});
+ saveAdmins();renderManagedAdmins();refreshAdmin();
+ document.getElementById("newAdminName").value="";
+}
+function renderManagedAdmins(){
+ document.getElementById("masterAdminList").innerHTML=admins.map(a=>`
+ <div class="order"><b>${escapeHTML(a.name)}</b> — ${escapeHTML(a.role)}
+ <button class="mini-btn" onclick="toggleAdmin(${a.id})">${a.active===false?"تفعيل":"إيقاف"}</button>
+ <button class="mini-btn danger-btn" onclick="removeAdmin(${a.id})">حذف</button></div>`).join("")||"لا يوجد إداريون";
+}
+function toggleAdmin(id){
+ const a=admins.find(x=>x.id===id);if(!a)return;
+ a.active=a.active===false;saveAdmins();renderManagedAdmins();refreshAdmin();
+}
+function removeAdmin(id){
+ if(!confirm("حذف الإداري؟"))return;
+ admins=admins.filter(x=>x.id!==id);saveAdmins();renderManagedAdmins();refreshAdmin();
+}
+const originalRenderRoomManager=renderRoomManager;
+function refreshMaster(){
+ renderRoomManager();renderManagedAdmins();renderMasterProducts();
+}
+const oldVerifyMaster=verifyMaster;
+verifyMaster=function(){
+ oldVerifyMaster();
+ if(masterUnlocked)refreshMaster();
+};
+function boot(){
+ applyStoreSettings();
+ ensureRoomPages();
+ renderNavigation();
+ render();
+ const user=load("rs_current_user",null);
+ if(user)enterStore(user);
+ else{
+ document.getElementById("registerGate").classList.add("active");
+ document.getElementById("appContent").style.display="none";
+ }
+}
+boot();
+</script>
+</body>
+</html>
